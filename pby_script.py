@@ -39,6 +39,7 @@ while ii < total_scene_number:
     light = bpy.data.objects['Lamp']
     light.data.use_shadow = False
     light.data.energy = 5.0
+    light.location = (3,3,3)
     light.select = False
 
     #setup camera:
