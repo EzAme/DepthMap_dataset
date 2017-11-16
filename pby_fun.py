@@ -90,6 +90,18 @@ def clean_up_scene():
          
     return tree, links
 
+def render_scene( links, scene, rl):
+                                                                           
+    #output the stereoscopic images:                                   
+    links.new(rl.outputs['Image'],composite.inputs['Image'])           
+                                                                       
+    scene.render.use_multiview = True                                  
+                                                                       
+    scene.render.filepath = 'StereoImages/Stereoscopic_'+str(ii)+'.png'
+    bpy.ops.render.render( write_still=True )                          
+                                                                   
+
+
 def makeascene():
     tree,links = clean_up_scene()
     # uncooked
@@ -102,8 +114,10 @@ def makeascene():
 
     scene = bpy.context.scene
     
+    create_background()
     create_random_cube([], 2, size=[0.7,1.0])
     create_random_cube("001",5,size=[ 0.7, 1.0])
+    render_scene( links, scene, rl)
 #    create_background()
 
 makeascene()
