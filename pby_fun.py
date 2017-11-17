@@ -85,9 +85,9 @@ def create_background():
     create a background composed of 3 planes
     """
     bpy.ops.mesh.primitive_plane_add( 
-            radius=1, 
+            radius=10, 
             enter_editmode=False, 
-            location=(7, 8, -1), 
+            location=(-8, 0, 0), 
             rotation=(0,0,0),
             layers=(
                  True, False, False, False, False,
@@ -96,9 +96,64 @@ def create_background():
                 False, False, False, False, False
                 )
             )
-    #bpy.ops.transform.rotate(value=rand.random()*3.14, 
+    bpy.ops.transform.rotate(
+            value=1.5708,
+            axis=(0,1,0),
+            constraint_axis=(False, True, False),
+            constraint_orientation='GLOBAL',
+             mirror=False,
+             proportional='DISABLED',
+             proportional_edit_falloff='SMOOTH',
+             proportional_size=1
+             )
     # create plane 2
-    
+    bpy.ops.mesh.primitive_plane_add( 
+            radius=10, 
+            enter_editmode=False, 
+            location=(0, -8, 0), 
+            rotation=(0,0,0),
+            layers=(
+                 True, False, False, False, False,
+                False, False, False, False, False,
+                False, False, False, False, False,
+                False, False, False, False, False
+                )
+            )
+    bpy.ops.transform.rotate(
+            value=-1.5708,
+            axis=(1,0,0),
+            constraint_axis=(True, False, False),
+            constraint_orientation='GLOBAL',
+             mirror=False,
+             proportional='DISABLED',
+             proportional_edit_falloff='SMOOTH',
+             proportional_size=1
+             )
+             
+    # create plane 3
+    bpy.ops.mesh.primitive_plane_add( 
+            radius=10, 
+            enter_editmode=False, 
+            location=(0, 0, -4), 
+            rotation=(0,0,0),
+            layers=(
+                 True, False, False, False, False,
+                False, False, False, False, False,
+                False, False, False, False, False,
+                False, False, False, False, False
+                )
+            )
+    bpy.ops.transform.rotate(
+            value=0,
+            axis=(0,0,0),
+            constraint_axis=( False, False, False),
+            constraint_orientation='GLOBAL',
+             mirror=False,
+             proportional='DISABLED',
+             proportional_edit_falloff='SMOOTH',
+             proportional_size=1
+             )
+             
 def clean_up_scene():
     # clear scene of all stuff (from the depthmap_dataset) 
     for material in bpy.data.materials:
@@ -128,14 +183,14 @@ def clean_up_scene():
          
     return tree, links
 
-def render_scene( links, scene, rl):
+def render_scene( links, scene, rl, composite, ID):
                                                                            
     #output the stereoscopic images:                                   
     links.new(rl.outputs['Image'],composite.inputs['Image'])           
                                                                        
     scene.render.use_multiview = True                                  
                                                                        
-    scene.render.filepath = 'StereoImages/Stereoscopic_'+str(ii)+'.png'
+    scene.render.filepath = 'StereoImages/Stereoscopic_'+str(ID)+'.png'
     bpy.ops.render.render( write_still=True )                          
                                                                    
 
@@ -155,7 +210,7 @@ def makeascene():
     create_background()
     create_random_cube([], 2, size=[0.7,1.0])
     create_random_cube("001",5,size=[ 0.7, 1.0])
-    render_scene( links, scene, rl)
+    render_scene( links, scene, rl, composite,1)
 #    create_background()
 
 makeascene()
