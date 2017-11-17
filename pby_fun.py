@@ -41,6 +41,44 @@ def create_random_cube(
         bpy.data.objects['Cube.'+objID].data.materials.append(mat)
     
 
+def create_random_sphere( 
+        objID,
+        magnitude, 
+        boundary=[(0,1),(0,1),(0,1)],
+        size = [0.01, 0.03]
+        ):
+    """
+    this function has been created to generate randomly sized triangles between
+    user-defined dimensions, reflectivity, color, and 
+    """
+    loc = ( (0.5-rand.random())*magnitude, (0.5-rand.random())*magnitude, (0.5-rand.random())*magnitude)
+
+    # create a cube object
+    bpy.ops.mesh.primitive_sphere_add( 
+        location= loc,
+        radius=rand.uniform(size[0], size[1])
+        )
+    bpy.ops.transform.rotate(
+            value=rand.random()*3.14, 
+            axis=(rand.random(),rand.random(), rand.random()),
+            constraint_orientation='GLOBAL',
+            mirror=False,
+            proportional='DISABLED',
+            proportional_edit_falloff='SMOOTH',
+            proportional_size=1
+            )
+    
+
+    # create and add a texture and color
+    bpy.ops.material.new()
+    if not len(objID):
+        mat = bpy.data.materials['Material']
+        mat.diffuse_color = ( rand.random(), rand.random(), rand.random())
+        bpy.data.objects['Sphere'].data.materials.append(mat)
+    else:
+        mat = bpy.data.materials['Material.'+objID]
+        mat.diffuse_color = ( rand.random(), rand.random(), rand.random())
+        bpy.data.objects['Sphere.'+objID].data.materials.append(mat)
 
 def create_background():
     """
