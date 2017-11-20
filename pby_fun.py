@@ -1,5 +1,6 @@
 import bpy
 import random as rand
+from math import sin, cos, pi
 
 def create_random_cube( 
         objID,
@@ -155,37 +156,21 @@ def create_background():
              )
              
 def clean_up_scene():
-    # clear scene of all stuff (from the depthmap_dataset) 
-    for material in bpy.data.materials:
-        material.user_clear();
-        bpy.data.materials.remove(material);
+    bpy.ops.wm.read_factory_settings()
 
-    for texture in bpy.data.textures:
-        texture.user_clear();
-        bpy.data.textures.remove(texture);
-    
-    for lamp in bpy.data.lamps:
-        lamp.user_clear();
-        bpy.data.lamps.remove(lamp);
+    for scene in bpy.data.scenes:
+        for obj in scene.objects:
+            scene.objects.unlink(obj)
 
-    # clear default nodes
-    bpy.context.scene.use_nodes = True
-    tree = bpy.context.scene.node_tree
-    links = tree.links
-    
-    for n in tree.nodes:
-        tree.nodes.remove(n)
-                
-    #Remove objects from previsous scenes
-    for item in bpy.data.objects:  
-        if item.type == "MESH":  
-            bpy.data.objects[item.name].select = True
-            bpy.ops.object.delete()
-
-    for item in bpy.data.meshes:
-         bpy.data.meshes.remove(item)
-         
-    return tree, links
+    # only worry about data in the startup scene
+    for bpy_data_iter in (
+        bpy.data.objects,
+        bpy.data.meshes,
+        bpy.data.lamps,
+        bpy.data.cameras,
+        ):
+        for id_data in bpy_data_iter:
+            bpy_data_iter.remove(id_data)
 
 def set_up_lighting(scene):
     #setup lighting:               
@@ -232,7 +217,32 @@ def set_up_lighting(scene):
     light2.data.energy = 5.0         
     light2.location = (8,-8,8)        
     light2.select = False  
-    
+
+def create_lamp(scene=None, R=10):
+    if not scene:
+        scene = bpy.context.scene
+
+    # Create new lamp datablock
+    lamp_data = bpy.data.lamps.new(name="New Lamp", type='POINT')
+
+    # Create new object with our lamp datablock
+    lamp_object = bpy.data.objects.new(name="New Lamp", object_data=lamp_data)
+
+    # Link lamp object to the scene so it'll appear in this scene
+    scene.objects.link(lamp_object)
+
+    # Place lamp to a specified location
+    theta = 2*pi*rand.random(); phi = pi*rand.random();
+    x = R*cos(theta)*sin(phi)
+    y = R*sin(theta)*sin(phi)
+    z = R*cos(phi)
+    lamp_object.location = (x,y,z)
+
+    # And finally select it make active
+    lamp_object.select = True
+    scene.objects.active = lamp_object
+
+    return scene
     
 def render_scene( links, scene, rl, composite, ID):
                                                                            
