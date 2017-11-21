@@ -1,18 +1,23 @@
 import bpy
 import random as rand
-from math import sin, cos, pi
+from math import sin, cos, pi, asin, acos, atan2
 
-def create_random_cube( 
-        objID,
-        magnitude, 
-        boundary=[(0,1),(0,1),(0,1)],
+def create_random_cube(
+        objID='', 
+        R=0.0,
+        range_theta=[0,2*pi], 
+        range_phi=[0,pi],
         size = [0.01, 0.03]
         ):
     """
     this function has been created to generate randomly sized triangles between
     user-defined dimensions, reflectivity, color, and 
     """
-    loc = ( (0.5-rand.random())*magnitude, (0.5-rand.random())*magnitude, (0.5-rand.random())*magnitude)
+    theta = (range_theta[1]-range_theta[0])*rand.random(); phi = (range_phi[1]-range_phi[0])*rand.random();
+    x = R*cos(theta)*sin(phi)
+    y = R*sin(theta)*sin(phi)
+    z = R*cos(phi)
+    loc = (x,y,z)
 
     # create a cube object
     bpy.ops.mesh.primitive_cube_add( 
@@ -42,18 +47,23 @@ def create_random_cube(
         bpy.data.objects['Cube.'+objID].data.materials.append(mat)
     
 
-def create_random_sphere( 
-        objID,
-        magnitude, 
-        boundary=[(0,1),(0,1),(0,1)],
+def create_random_sphere(
+        objID='', 
+        R=0.0,
+        range_theta=[0,2*pi], 
+        range_phi=[0,pi],
         size = [0.01, 0.03]
         ):
     """
     this function has been created to generate randomly sized triangles between
     user-defined dimensions, reflectivity, color, and 
     """
-    loc = ( (0.5-rand.random())*magnitude, (0.5-rand.random())*magnitude, (0.5-rand.random())*magnitude)
-
+    theta = (range_theta[1]-range_theta[0])*rand.random(); phi = (range_phi[1]-range_phi[0])*rand.random();
+    x = R*cos(theta)*sin(phi)
+    y = R*sin(theta)*sin(phi)
+    z = R*cos(phi)
+    loc = (x,y,z)    
+    
     # create a cube object
     bpy.ops.mesh.primitive_sphere_add( 
         location= loc,
@@ -156,8 +166,6 @@ def create_background():
              )
              
 def clean_up_scene():
-    bpy.ops.wm.read_factory_settings()
-
     for scene in bpy.data.scenes:
         for obj in scene.objects:
             scene.objects.unlink(obj)
@@ -172,7 +180,11 @@ def clean_up_scene():
         for id_data in bpy_data_iter:
             bpy_data_iter.remove(id_data)
 
-def create_camera(R=8,range_theta=[0,2*pi], range_phi=[0,pi]):
+def create_camera(
+        R=8,
+        range_theta=[0,2*pi], 
+        range_phi=[0,pi]
+        ):
     scene = bpy.context.scene
 
     # create camera datablock
@@ -183,6 +195,7 @@ def create_camera(R=8,range_theta=[0,2*pi], range_phi=[0,pi]):
 
     # Link camera object to the scene so it'll appear in the scene
     scene.objects.link(cam_object)
+    cam_object.select = True
 
     # Place the camera in a random location within the given range
     theta = (range_theta[1]-range_theta[0])*rand.random(); phi = (range_phi[1]-range_phi[0])*rand.random();
@@ -199,58 +212,18 @@ def create_camera(R=8,range_theta=[0,2*pi], range_phi=[0,pi]):
     else:
         cam_object.rotation_euler = (xang, 0, -zang)
 
+    cam_object.data.stereo.convergence_distance = 10000
+    cam_object.data.lens = 15
+    cam_object.data.stereo.interocular_distance = 0.3
+    cam_object.select = False
 
     return cam_object
 
-#setup lighting:               
-def set_up_lighting(scene):
-    # create a new lamp
-    lamp_data = bpy.data.lamps.new(name="Lamp", type='POINT')
-
-    # Create new object with our lamp datablock
-    lamp_object = bpy.data.objects.new(name="New Lamp", object_data=lamp_data)
-
-    # Link lamp object to the scene so it'll appear in this scene
-    scene.objects.link(lamp_object)
-
-    # Place lamp to a specified location
-    lamp_object.location = (5.0, 5.0, 5.0)
-
-    # And finally select it make active
-    lamp_object.select = True
-    scene.objects.active = lamp_object
-
-    light = bpy.data.objects['Lamp']
-    light.data.use_shadow = False   
-    light.data.energy = 5.0         
-    light.location = (8,8,8)        
-    light.select = False            
-
-     # create a new lamp
-    lamp_data = bpy.data.lamps.new(name="Lamp.001", type='POINT')
-
-    # Create new object with our lamp datablock
-    lamp_object = bpy.data.objects.new(name="New Lamp", object_data=lamp_data)
-
-    # Link lamp object to the scene so it'll appear in this scene
-    scene.objects.link(lamp_object)
-
-    # Place lamp to a specified location
-    lamp_object.location = (5.0, 5.0, 5.0)
-
-    # And finally select it make active
-    lamp_object.select = True
-    scene.objects.active = lamp_object
-
-    light2 = bpy.data.objects['Lamp.001']
-    light2.data.use_shadow = False   
-    light2.data.energy = 5.0         
-    light2.location = (8,-8,8)        
-    light2.select = False  
-
-def create_lamp(scene=None, R=10):
-    if not scene:
-        scene = bpy.context.scene
+def create_lamp( 
+        R=10,
+        range_theta=[0,2*pi], 
+        range_phi=[0,pi]):
+    scene = bpy.context.scene
 
     # Create new lamp datablock
     lamp_data = bpy.data.lamps.new(name="New Lamp", type='POINT')
@@ -262,7 +235,7 @@ def create_lamp(scene=None, R=10):
     scene.objects.link(lamp_object)
 
     # Place lamp to a specified location
-    theta = 2*pi*rand.random(); phi = pi*rand.random();
+    theta = (range_theta[1]-range_theta[0])*rand.random(); phi = (range_phi[1]-range_phi[0])*rand.random();
     x = R*cos(theta)*sin(phi)
     y = R*sin(theta)*sin(phi)
     z = R*cos(phi)
@@ -274,34 +247,21 @@ def create_lamp(scene=None, R=10):
 
     return scene
     
-def render_scene( links, scene, rl, composite, ID):
-    #output the stereoscopic images:                                   
-    links.new(rl.outputs['Image'],composite.inputs['Image'])           
-                                                                       
-    scene.render.use_multiview = True                                  
-                                                                       
-    scene.render.filepath = 'StereoImages/Stereoscopic_'+str(ID)+'.png'
-    bpy.ops.render.render( write_still=True )                          
-                                                                   
-
+def render_scene( id=""):
+    bpy.context.scene.camera = bpy.data.objects['Camera'+str(id)]
+    bpy.data.scenes['Scene'].render.filepath = 'image'+str(id)+".jpg"
+    bpy.ops.render.render(write_still=True)
 
 def makeascene():
-    tree,links = clean_up_scene()
-    # uncooked
-    scene = bpy.context.scene
-    scene.render.use_multiview = True
-    scene.render.views_format = 'STEREO_3D'
-    rl = tree.nodes.new(type="CompositorNodeRLayers")
-    composite = tree.nodes.new(type="CompositorNodeComposite")
-    composite.location = 200,0
-
-    scene = bpy.context.scene
+    clean_up_scene()
     
     create_background()
-    create_random_cube([], 2, size=[0.7,1.0])
-    create_random_cube("001",5,size=[ 0.7, 1.0])
-    render_scene( links, scene, rl, composite,1)
-    set_up_lighting(2)
+    create_random_cube('',0,  [0,pi/2], [0,pi/2], size=[0.7,1.0])
+    create_random_cube('001',1.5,[0,pi/2], [0,pi/2], size=[0.7,1.0])
+    create_lamp(15,[0,pi/2], [0,pi/2])
+    create_lamp(15,[0,pi/2], [0,pi/2])
+    create_camera(6,[0,pi/2], [0,pi/2])
+    render_scene( )
 #    create_background()
 
 makeascene()

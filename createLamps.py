@@ -1,5 +1,5 @@
 import bpy, random as rand
-from math import cos, sin, pi, atan2, sqrt
+from math import cos, sin, pi, atan2, sqrt, acos
 from mathutils import Vector, Euler
 
 def create_lamp( R=10):                                                           
@@ -62,42 +62,20 @@ def create_camera(R=15,range_theta=[0,2*pi], range_phi=[0,pi]):
     y = R*sin(theta)*sin(phi)
     z = R*cos(phi)
     cam_object.location = (x,y,z)
-    print ("angles")
-    print (atan2(y,x))
-    print (theta)
-    print (atan2(z,sqrt(x**2 + y**2)))
-    print (phi)
     
     # Aim camera at the origin
-    beta    = acos(z/R);
-    alpha   = acos(
-    cam_object.rotation_euler = Euler((atan2(y,x)+pi, 0, pi - atan2(z,sqrt(x**2 + y**2))),'XYZ')
+    zang = atan2(y,x)
+    xang = acos(z/R)
+    if ( z<0):
+        cam_object.rotation_euler = (xang, 0, pi-zang)
+    else:
+        cam_object.rotation_euler = (xang, 0, -zang)
     
     
     return cam_object
 
-def look_at(obj_camera, obj_target):
-    ttc = obj_camera.constraints.new(type='TRACK_TO')
-    loc_camera = obj_camera.location
-    print(loc_camera)
-    direction = point - loc_camera
-    # point the cameras '-Z' and use its 'Y' as up
-    rot_quat = direction.to_track_quat('-Z', 'Y')
-
-    # assume we're using euler rotation
-    obj_camera.rotation_euler = rot_quat.to_euler()
-    
-def look_back_at_it(obj_camera):
-    x,y,z = obj_camera.location
-    # point the cameras '-Z' and use its 'Y' as up
-#    rot_quat = direction.to_track_quat('-Z', 'Y')
-
-    # assume we're using euler rotation
-#    obj_camera.rotation_euler = rot_quat.to_euler()
-    
 def render_scene(id=""):
     bpy.context.scene.camera = bpy.data.objects['Camera'+str(id)]
-    bpy.ops.view3d.camera_to_view_selected()
     bpy.data.scenes['Scene'].render.filepath = 'image'+str(id)+".jpg"
     bpy.ops.render.render(write_still=True)
     
