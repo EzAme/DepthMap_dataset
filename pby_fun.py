@@ -264,6 +264,20 @@ def randomize_texture():
             mat.diffuse_color = (rand.random(), rand.random(), rand.random())
             obj.data.materials.append(mat)
             
+def import_rowdy(filename,
+        R=10,
+        range_theta=[0,2*pi], 
+        range_phi=[0,pi]):
+    bpy.ops.import_mesh.stl(filepath=filename)
+    obj = bpy.data.objects['RowdyWalker#6']
+    obj.scale *= 0.01
+    obj.rotation_euler = (pi*rand.random(), pi*rand.random(), pi*rand.random())
+    theta = (range_theta[1]-range_theta[0])*rand.random(); phi = (range_phi[1]-range_phi[0])*rand.random();
+    x = R*cos(theta)*sin(phi)
+    y = R*sin(theta)*sin(phi)
+    z = R*cos(phi)
+    obj.location = (x,y,z)
+
 def makeascene():
     clean_up_scene()
     
@@ -271,6 +285,7 @@ def makeascene():
     create_random_cube('',0,  [0,pi/2], [0,pi/2], size=[0.5,0.75])
     create_random_cube('001',1.5,[0,pi/2], [0,pi/2], size=[0.25,0.5])
     create_random_sphere('',3,[0,pi/2], [0,pi/2], size=[0.25,0.5])
+    import_rowdy('RowdyWalker#6.STL', R=2)
     create_lamp(15,[0,pi/2], [0,pi/2])
     create_lamp(15,[0,pi/2], [0,pi/2])
     create_camera(10,[0,pi/2], [0,pi/2])
