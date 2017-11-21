@@ -65,9 +65,9 @@ def create_random_sphere(
     loc = (x,y,z)    
     
     # create a cube object
-    bpy.ops.mesh.primitive_sphere_add( 
+    bpy.ops.mesh.primitive_ico_sphere_add( 
         location= loc,
-        radius=rand.uniform(size[0], size[1])
+        size=rand.uniform(size[0], size[1])
         )
     bpy.ops.transform.rotate(
             value=rand.random()*3.14, 
@@ -85,20 +85,21 @@ def create_random_sphere(
     if not len(objID):
         mat = bpy.data.materials['Material']
         mat.diffuse_color = ( rand.random(), rand.random(), rand.random())
-        bpy.data.objects['Sphere'].data.materials.append(mat)
+        bpy.data.objects['Icosphere'].data.materials.append(mat)
     else:
         mat = bpy.data.materials['Material.'+objID]
         mat.diffuse_color = ( rand.random(), rand.random(), rand.random())
-        bpy.data.objects['Sphere.'+objID].data.materials.append(mat)
+        bpy.data.objects['Icosphere.'+objID].data.materials.append(mat)
 
 def create_background():
     """
     create a background composed of 3 planes
     """
+    N = 15
     bpy.ops.mesh.primitive_plane_add( 
-            radius=10, 
+            radius=N, 
             enter_editmode=False, 
-            location=(-8, 0, 0), 
+            location=(-8, N-8, N-4), 
             rotation=(0,0,0),
             layers=(
                  True, False, False, False, False,
@@ -119,9 +120,9 @@ def create_background():
              )
     # create plane 2
     bpy.ops.mesh.primitive_plane_add( 
-            radius=10, 
+            radius=N, 
             enter_editmode=False, 
-            location=(0, -8, 0), 
+            location=(N-8, -8, N-4), 
             rotation=(0,0,0),
             layers=(
                  True, False, False, False, False,
@@ -143,9 +144,9 @@ def create_background():
              
     # create plane 3
     bpy.ops.mesh.primitive_plane_add( 
-            radius=10, 
+            radius=N, 
             enter_editmode=False, 
-            location=(0, 0, -4), 
+            location=(N-8, N-8, -4), 
             rotation=(0,0,0),
             layers=(
                  True, False, False, False, False,
@@ -204,17 +205,21 @@ def create_camera(
     z = R*cos(phi)
     cam_object.location = (x,y,z)
 
+    # set up camera focal properties
+    cam_object.data.stereo.convergence_distance = 10000
+    cam_object.data.lens = 15
+    cam_object.data.stereo.interocular_distance = 0.3
+    
     # Aim camera at the origin
     zang = atan2(y,x)
     xang = acos(z/R)
     if ( z<0):
         cam_object.rotation_euler = (xang, 0, pi-zang)
+    elif(x>0 and y>0 and z>0):
+        cam_object.rotation_euler = (xang, 0, pi/2+zang)
     else:
         cam_object.rotation_euler = (xang, 0, -zang)
 
-    cam_object.data.stereo.convergence_distance = 10000
-    cam_object.data.lens = 15
-    cam_object.data.stereo.interocular_distance = 0.3
     cam_object.select = False
 
     return cam_object
@@ -252,15 +257,24 @@ def render_scene( id=""):
     bpy.data.scenes['Scene'].render.filepath = 'image'+str(id)+".jpg"
     bpy.ops.render.render(write_still=True)
 
+def randomize_texture():
+    for obj in bpy.data.objects:
+        if obj.type == 'MESH':
+            mat = bpy.data.materials.new(name='Material')
+            mat.diffuse_color = (rand.random(), rand.random(), rand.random())
+            obj.data.materials.append(mat)
+            
 def makeascene():
     clean_up_scene()
     
     create_background()
-    create_random_cube('',0,  [0,pi/2], [0,pi/2], size=[0.7,1.0])
-    create_random_cube('001',1.5,[0,pi/2], [0,pi/2], size=[0.7,1.0])
+    create_random_cube('',0,  [0,pi/2], [0,pi/2], size=[0.5,0.75])
+    create_random_cube('001',1.5,[0,pi/2], [0,pi/2], size=[0.25,0.5])
+    create_random_sphere('',3,[0,pi/2], [0,pi/2], size=[0.25,0.5])
     create_lamp(15,[0,pi/2], [0,pi/2])
     create_lamp(15,[0,pi/2], [0,pi/2])
-    create_camera(6,[0,pi/2], [0,pi/2])
+    create_camera(10,[0,pi/2], [0,pi/2])
+    randomize_texture()
     render_scene( )
 #    create_background()
 
