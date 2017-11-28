@@ -4,13 +4,13 @@ In the domain randomization directory is dr_script which uses function from bpy_
 
 Blender is a open source 3D graphics and animation software, downloadable at "https://www.blender.org/". 
 
-Example scene:
+Example positive testcase:
 
-![alt tag](DepthMap_dataset/domainRandomization/data/positive/set3001_image2.png)
+![alt tag](https://github.com/brothaman/DepthMap_dataset/blob/master/domainRandomization/data/positive/set3000_image0.png)
 
-and corresponding Depth map:
+and negative testcase:
 
-![alt tag](DepthMap_dataset/domainRandomization/data/negative/set0_image0.png)
+![alt tag](https://github.com/brothaman/DepthMap_dataset/blob/master/domainRandomization/data/negative/set0_image0.png)
 
 Intallation:
 
