@@ -257,9 +257,10 @@ def create_lamp(
 
     return scene
     
-def render_scene( id="", ofilename='image'+str(id)+".jpg"):
+def render_scene( id="", ofilename='image'+str(id)+".png"):
     bpy.context.scene.render.resolution_x = 227
     bpy.context.scene.render.resolution_y = 227
+    bpy.context.scene.render.resolution_percentage = 100
     bpy.context.scene.camera = bpy.data.objects['Camera'+str(id)]
     bpy.data.scenes['Scene'].render.filepath = ofilename
     bpy.ops.render.render(write_still=True)
