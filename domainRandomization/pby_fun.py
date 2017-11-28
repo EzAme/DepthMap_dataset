@@ -1,4 +1,5 @@
 import bpy
+import os
 import random as rand
 from math import sin, cos, pi, asin, acos, atan2
 
@@ -229,7 +230,8 @@ def create_camera(
 def create_lamp( 
         R=10,
         range_theta=[0,2*pi], 
-        range_phi=[0,pi]):
+        range_phi=[0,pi],
+        intensity = 5):
     scene = bpy.context.scene
 
     # Create new lamp datablock
@@ -247,6 +249,7 @@ def create_lamp(
     y = R*sin(theta)*sin(phi)
     z = R*cos(phi)
     lamp_object.location = (x,y,z)
+    lamp_object.data.energy = intensity
 
     # And finally select it make active
     lamp_object.select = True
@@ -254,9 +257,11 @@ def create_lamp(
 
     return scene
     
-def render_scene( id=""):
+def render_scene( id="", ofilename='image'+str(id)+".jpg"):
+    bpy.context.scene.render.resolution_x = 227
+    bpy.context.scene.render.resolution_y = 227
     bpy.context.scene.camera = bpy.data.objects['Camera'+str(id)]
-    bpy.data.scenes['Scene'].render.filepath = 'image'+str(id)+".jpg"
+    bpy.data.scenes['Scene'].render.filepath = ofilename
     bpy.ops.render.render(write_still=True)
 
 def randomize_texture():
@@ -266,14 +271,25 @@ def randomize_texture():
             mat.diffuse_color = (rand.random(), rand.random(), rand.random())
             obj.data.materials.append(mat)
             
-def import_rowdy(filename,
+def import_rowdy(filename="RowdyWalker#6",
         R=[0,10],
         range_theta=[0,2*pi], 
-        range_phi=[0,pi]):
+        range_phi=[0,pi],
+        size=[0.03,0.01]):
+    # import rowdy in to the blender scene
     bpy.ops.import_mesh.stl(filepath=filename)
-    obj = bpy.data.objects['RowdyWalker#6']
-    obj.scale *= 0.001
+    filename = os.path.splitext(filename)[0]
+
+    # capitalize the filename for some fkin reason
+    obj = bpy.data.objects[filename.capitalize()]
+
+    # scale the rowdy to an appropriate size
+    obj.scale *= size[0] + (size[1]-size[0])*rand.random()
+
+    # randomize the orientations of rowdy
     obj.rotation_euler = (pi*rand.random(), pi*rand.random(), pi*rand.random())
+
+    # place the rowdy within the given bounds
     theta = (range_theta[1]-range_theta[0])*rand.random(); phi = (range_phi[1]-range_phi[0])*rand.random();
     R = R[0]+(R[1]-R[0])*rand.random()
     x = R*cos(theta)*sin(phi)
