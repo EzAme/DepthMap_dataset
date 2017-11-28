@@ -1,16 +1,16 @@
 # DepthMap_dataset
 
-pby_script is a Python Blender script for creating large numbers of randomized 3d scenes and corresponding sets of stereoscopic images and depth maps, for machine learning and computer vision. Everything is configurable, from the camera convergence plane or interocular distance and focus length to the color and shapes of the randomized object.
+In the domain randomization directory is dr_script which uses function from bpy_fun to generate randomized scenes.
 
 Blender is a open source 3D graphics and animation software, downloadable at "https://www.blender.org/". 
 
 Example scene:
 
-![alt tag](https://raw.github.com/LouisFoucard/DepthMap_dataset/master/StereoImages/Stereoscopic_195.png)
+![alt tag](DepthMap_dataset/domainRandomization/data/positive/set3001_image2.png)
 
 and corresponding Depth map:
 
-![alt tag](https://raw.github.com/LouisFoucard/DepthMap_dataset/master/Depth_map/DepthMap_195.png)
+![alt tag](DepthMap_dataset/domainRandomization/data/negative/set0_image0.png)
 
 Intallation:
 
