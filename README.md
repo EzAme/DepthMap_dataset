@@ -1,4 +1,4 @@
-# DepthMap_dataset
+# Environment Radomization
 
 In the domain randomization directory is dr_script which uses function from bpy_fun to generate randomized scenes.
 
