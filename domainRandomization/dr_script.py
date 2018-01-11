@@ -4,27 +4,36 @@ import os
 sys.path.append("/home/robro/DepthMap_dataset/domainRandomization")
 import pby_fun as fun
 from random import randint
+from math import pi
 
 
-def add_random_shape():
+def add_random_shape(R=[2,6], size=[1.5,1], range_theta=[0,pi/2], range_phi=[0,pi/2]):
     i = randint(1,2)
     if i is 1:
-        fun.create_random_cube(R=[6,2],size=[1.5,1]);
+        fun.create_random_cube(R=R,size=size);
     elif i is 2:
-        fun.create_random_sphere(R=[6,2],size=[1.5,1]);
+        fun.create_random_sphere(R=R,size=size);
 
 
-def makeascene():
+def makeascene(val=0):
     # remove all object from current scene
     fun.clean_up_scene()
 
+    val = 0
     # create a background
-    fun.create_background()
+    if val == 0:
+        fun.create_flat_background()
+    elif val == 1:
+        fun.create_corner_background()
+    else:
+        fun.create_sphere_background()
 
 
 if __name__ == "__main__":
     # the number of scenes
-    N = 2000
+    N = 100
+    ncams = 3
+    N = int(N/ncams)
 
     for i in range(N):
         # create a scene
@@ -53,10 +62,11 @@ if __name__ == "__main__":
                     range_theta=[0,3.14159265],
                     range_phi=[0,1.5707963268])
             
-        for k in range(5):
+        for k in range(3):
             fun.create_camera(R=15, 
                     range_theta=[0,1.5707963268],
-                    range_phi=[0,1.5707963268])
+                    range_phi=[0,1.5707963268],
+                    view_range=[30,60])
             if k == 0:
                 if i<N/2:
                     fun.render_scene(id="",ofilename="drimages/not_rowdy/set"+str(i)+"_image"+str(k)+".png")

@@ -14,7 +14,8 @@ def create_random_cube(
     this function has been created to generate randomly sized triangles between
     user-defined dimensions, reflectivity, color, and 
     """
-    theta = (range_theta[1]-range_theta[0])*rand.random(); phi = (range_phi[1]-range_phi[0])*rand.random();
+    theta = ((range_theta[1]-range_theta[0])*rand.random()+range_theta[0]); 
+    phi = ((range_phi[1]-range_phi[0])*rand.random()+range_phi[0]);
     R = R[0]+(R[1]-R[0])*rand.random()
     x = R*cos(theta)*sin(phi)
     y = R*sin(theta)*sin(phi)
@@ -60,7 +61,8 @@ def create_random_sphere(
     this function has been created to generate randomly sized triangles between
     user-defined dimensions, reflectivity, color, and 
     """
-    theta = (range_theta[1]-range_theta[0])*rand.random(); phi = (range_phi[1]-range_phi[0])*rand.random();
+    theta = ((range_theta[1]-range_theta[0])*rand.random()+range_theta[0]); 
+    phi = ((range_phi[1]-range_phi[0])*rand.random()+range_phi[0]);
     R = R[0]+(R[1]-R[0])*rand.random()
     x = R*cos(theta)*sin(phi)
     y = R*sin(theta)*sin(phi)
@@ -94,7 +96,43 @@ def create_random_sphere(
         mat.diffuse_color = ( rand.random(), rand.random(), rand.random())
         bpy.data.objects['Icosphere.'+objID].data.materials.append(mat)
 
-def create_background():
+def create_sphere_background():
+    """
+    create a background composed of 3 planes
+    """
+    N = 15
+    create_random_sphere(R=[10,10],range_theta=[45*pi/180,45*pi/180],range_phi=[45*pi/180,45*pi/180],size=[20,20])
+
+
+def create_flat_background():
+    """
+    create a background composed of 3 planes
+    """
+    N = 100
+    bpy.ops.mesh.primitive_plane_add( 
+            radius=N, 
+            enter_editmode=False, 
+            location=(-4,-4,-4), 
+            rotation=(0,45*pi/180,45*pi/180),
+            layers=(
+                 True, False, False, False, False,
+                False, False, False, False, False,
+                False, False, False, False, False,
+                False, False, False, False, False
+                )
+            )
+    bpy.ops.transform.rotate(
+            value=0.0,
+            axis=(0,1,0),
+            constraint_axis=(False, True, False),
+            constraint_orientation='GLOBAL',
+             mirror=False,
+             proportional='DISABLED',
+             proportional_edit_falloff='SMOOTH',
+             proportional_size=1
+             )
+ 
+def create_corner_background():
     """
     create a background composed of 3 planes
     """
@@ -187,7 +225,8 @@ def clean_up_scene():
 def create_camera(
         R=8,
         range_theta=[0,2*pi], 
-        range_phi=[0,pi]
+        range_phi=[0,pi],
+        view_range=[40,50]
         ):
     scene = bpy.context.scene
 
@@ -202,7 +241,8 @@ def create_camera(
     cam_object.select = True
 
     # Place the camera in a random location within the given range
-    theta = (range_theta[1]-range_theta[0])*rand.random(); phi = (range_phi[1]-range_phi[0])*rand.random();
+    theta = ((range_theta[1]-range_theta[0])*rand.random()+range_theta[0]); 
+    phi = ((range_phi[1]-range_phi[0])*rand.random()+range_phi[0]);
     x = R*cos(theta)*sin(phi)
     y = R*sin(theta)*sin(phi)
     z = R*cos(phi)
@@ -210,7 +250,7 @@ def create_camera(
 
     # set up camera focal properties
     cam_object.data.stereo.convergence_distance = 10000
-    cam_object.data.lens = 15
+    cam_object.data.angle = ((view_range[1]-view_range[0])*rand.random()+view_range[0])*pi/180
     cam_object.data.stereo.interocular_distance = 0.3
     
     # Aim camera at the origin
@@ -244,7 +284,8 @@ def create_lamp(
     scene.objects.link(lamp_object)
 
     # Place lamp to a specified location
-    theta = (range_theta[1]-range_theta[0])*rand.random(); phi = (range_phi[1]-range_phi[0])*rand.random();
+    theta = ((range_theta[1]-range_theta[0])*rand.random()+range_theta[0]); 
+    phi = ((range_phi[1]-range_phi[0])*rand.random()+range_phi[0]);
     x = R*cos(theta)*sin(phi)
     y = R*sin(theta)*sin(phi)
     z = R*cos(phi)
@@ -273,6 +314,9 @@ def randomize_texture():
         if obj.type == 'MESH':
             mat = bpy.data.materials.new(name='Material')
             mat.diffuse_color = (rand.random(), rand.random(), rand.random())
+            tex = bpy.data.textures.new("SomeName", 'IMAGE')
+            slot = mat.texture_slots.add()
+            slot.texture = tex
             obj.data.materials.append(mat)
             
 def import_rowdy(filename="RowdyWalker#6",
@@ -294,7 +338,8 @@ def import_rowdy(filename="RowdyWalker#6",
     obj.rotation_euler = (pi*rand.random(), pi*rand.random(), pi*rand.random())
 
     # place the rowdy within the given bounds
-    theta = (range_theta[1]-range_theta[0])*rand.random(); phi = (range_phi[1]-range_phi[0])*rand.random();
+    theta = ((range_theta[1]-range_theta[0])+range_theta[0])*rand.random(); 
+    phi = ((range_phi[1]-range_phi[0])+range_phi[0])*rand.random();
     R = R[0]+(R[1]-R[0])*rand.random()
     x = R*cos(theta)*sin(phi)
     y = R*sin(theta)*sin(phi)
