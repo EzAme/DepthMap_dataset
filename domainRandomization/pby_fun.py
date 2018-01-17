@@ -302,8 +302,7 @@ def render_scene( id="", ofilename='image'+str(id)+".png"):
     bpy.context.scene.render.resolution_x = 227
     bpy.context.scene.render.resolution_y = 227
     bpy.context.scene.render.resolution_percentage = 100
-    bpy.context.user_preferences.system.compute_device_type = 'CUDA'
-    bpy.context.user_preferences.system.compute_device = 'CUDA_0'
+
     bpy.context.scene.cycles.device = 'GPU'
     bpy.context.scene.camera = bpy.data.objects['Camera'+str(id)]
     bpy.data.scenes['Scene'].render.filepath = ofilename

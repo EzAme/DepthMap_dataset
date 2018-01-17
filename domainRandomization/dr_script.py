@@ -1,7 +1,7 @@
 # import the enviroment randomization function file
 import sys
 import os
-sys.path.append("/home/robro/DepthMap_dataset/domainRandomization")
+sys.path.append("/home/ez/DR/domainRandomization")
 import pby_fun as fun
 from random import randint
 from math import pi
