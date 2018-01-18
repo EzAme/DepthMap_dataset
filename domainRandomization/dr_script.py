@@ -48,7 +48,7 @@ if __name__ == "__main__":
                 add_random_shape()
         else:
             # add rowdy and add j random shapes with textures
-            fun.import_rowdy(filename="rowdy.stl",
+            fun.import_rowdy(filename="rowdy.STL",
                     R=[4,6],
                     range_theta=[-0.7853981634,2.3561944902],
                     range_phi=[0,1.25],
