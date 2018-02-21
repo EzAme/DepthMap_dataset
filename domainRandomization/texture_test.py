@@ -1,4 +1,5 @@
 import bpy
+import random as rand
 
 
 def createMaterials():
@@ -9,9 +10,10 @@ def createMaterials():
     # mbtex.type = 'MARBLE'
     # print(mbtex)
     # mbtex = mbtex.recast_type()
+
     mbtex.noise_depth = 1
     mbtex.noise_scale = 1.6
-    mbtex.noise_basis_2 = 'SIN'
+    mbtex.noise_basis_2 = 'TRI'
     mbtex.turbulence = 5
 
 
@@ -26,6 +28,7 @@ def createMaterials():
 # Create new material
     mat = bpy.data.materials.new('TexMat')
     mat.alpha = 0
+    mat.diffuse_color = (rand.random(), rand.random(), rand.random())
     print(mat)
 # Map marble to specularity
 #     mat.add_texture(texture = mbtex, texture_coordinates = 'UV', map_to = 'SPECULARITY')
@@ -33,6 +36,8 @@ def createMaterials():
     # print(slot)
     slot.texture = mbtex
     slot.texture_coords = 'UV'
+    slot.blend_type = 'COLOR'
+    slot.color=(rand.random(), rand.random(), rand.random())
     print(slot)
     # mb_mtex = mat.textures[0]
 
@@ -53,20 +58,22 @@ def createMaterials():
 
     # Add the two materials to mesh
     me = ob.data
-    # me.add_material(slot)
-    me.materials[0]=mat
+    me.materials.append(mat)
+
+    # me.materials[0]=mat
     # me.add_material(mat2)
 
 # Assign mat2 to all faces to the left, with x coordinate > 0
-    for f in me.faces:
-        left = True
-    for v in f.verts:
-        vert = me.verts[v]
-    if vert.co.x < 0:
-        left = False
-    if left:
-        f.material_index = 0
-    else:
-        f.material_index = 1
-    return
+#     for f in me.faces:
+#         left = True
+#     for v in f.verts:
+#         vert = me.verts[v]
+#     if vert.co.x < 0:
+#         left = False
+#     if left:
+#         f.material_index = 0
+#     else:
+#         f.material_index = 1
+#     return
+
 createMaterials()

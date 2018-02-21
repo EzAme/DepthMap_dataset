@@ -31,7 +31,7 @@ def makeascene(val=0):
 
 if __name__ == "__main__":
     # the number of scenes
-    N = 100
+    N = 10
     ncams = 3
     N = int(N/ncams)
 
@@ -48,7 +48,8 @@ if __name__ == "__main__":
                 add_random_shape()
         else:
             # add rowdy and add j random shapes with textures
-            fun.import_rowdy(filename="rowdy.STL",
+            # fun.import_rowdy(filename="rowdy.STL",
+            fun.import_rowdy(filename="fastener1.stl",
                     R=[4,6],
                     range_theta=[-0.7853981634,2.3561944902],
                     range_phi=[0,1.25],

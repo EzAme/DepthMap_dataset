@@ -324,12 +324,12 @@ def import_rowdy(filename="RowdyWalker#6",
         range_phi=[0,pi],
         size=[0.03,0.01]):
     # import rowdy in to the blender scene
-    # print(filename)
+    print(filename)
     bpy.ops.import_mesh.stl(filepath=filename)
     filename = os.path.splitext(filename)[0]
     # print(filename)
     # capitalize the filename for some fkin reason
-    obj = bpy.data.objects[filename]#.capitalize()]
+    obj = bpy.data.objects[filename.capitalize()]
 
     # scale the rowdy to an appropriate size
     obj.scale *= size[0] + (size[1]-size[0])*rand.random()
