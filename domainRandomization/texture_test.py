@@ -13,7 +13,7 @@ def createMaterials():
 
     mbtex.noise_depth = 1
     mbtex.noise_scale = 1.6
-    mbtex.noise_basis_2 = 'TRI'
+    mbtex.noise_basis_2 = 'SAW'
     mbtex.turbulence = 5
 
 
@@ -27,18 +27,19 @@ def createMaterials():
 
 # Create new material
     mat = bpy.data.materials.new('TexMat')
+    mat.diffuse_shader='FRESNEL'
     mat.alpha = 0
     mat.diffuse_color = (rand.random(), rand.random(), rand.random())
-    print(mat)
+    # print(mat)
 # Map marble to specularity
 #     mat.add_texture(texture = mbtex, texture_coordinates = 'UV', map_to = 'SPECULARITY')
     slot= mat.texture_slots.add()
     # print(slot)
     slot.texture = mbtex
-    slot.texture_coords = 'UV'
-    slot.blend_type = 'COLOR'
+    slot.texture_coords = 'OBJECT'
+    slot.blend_type = 'MIX'
     slot.color=(rand.random(), rand.random(), rand.random())
-    print(slot)
+    # print(slot)
     # mb_mtex = mat.textures[0]
 
 # Map cloud to alpha, reflection and normal, but not diffuse
@@ -53,16 +54,16 @@ def createMaterials():
 #     mat2.specular_color = (1.0, 1.0, 0.0)
 
 # Pick active object, remove its old material (assume exactly one old material).
-    ob = bpy.context.object
-    bpy.ops.object.material_slot_remove()
+#     ob = bpy.context.object  #uncomment
+    # bpy.ops.object.material_slot_remove()
 
     # Add the two materials to mesh
-    me = ob.data
-    me.materials.append(mat)
+    # me = ob.data #uncomment
+    # me.materials.append(mat) #uncomment
 
     # me.materials[0]=mat
     # me.add_material(mat2)
-
+    return mat
 # Assign mat2 to all faces to the left, with x coordinate > 0
 #     for f in me.faces:
 #         left = True
@@ -76,4 +77,4 @@ def createMaterials():
 #         f.material_index = 1
 #     return
 
-createMaterials()
+# createMaterials()

@@ -3,12 +3,16 @@ import sys
 import os
 sys.path.append("/home/ez/DR/domainRandomization")
 import pby_fun as fun
+import texture_test as tex
 from random import randint
 from math import pi
 
-
+# Delete excess materials
+# for material in bpy.data.materials:
+#     if not material.users:
+#         bpy.data.materials.remove(material)
 def add_random_shape(R=[2,6], size=[1.5,1], range_theta=[0,pi/2], range_phi=[0,pi/2]):
-    i = randint(1,2)
+    i = 1#randint(1,2)
     if i is 1:
         fun.create_random_cube(R=R,size=size);
     elif i is 2:
@@ -31,8 +35,8 @@ def makeascene(val=0):
 
 if __name__ == "__main__":
     # the number of scenes
-    N = 10
-    ncams = 3
+    N = 20
+    ncams = 2
     N = int(N/ncams)
 
     for i in range(N):
@@ -48,8 +52,8 @@ if __name__ == "__main__":
                 add_random_shape()
         else:
             # add rowdy and add j random shapes with textures
-            # fun.import_rowdy(filename="rowdy.STL",
-            fun.import_rowdy(filename="fastener1.stl",
+            fun.import_rowdy(filename="rowdy.STL",
+            # fun.import_rowdy(filename="fastener1.stl",
                     R=[4,6],
                     range_theta=[-0.7853981634,2.3561944902],
                     range_phi=[0,1.25],
@@ -63,7 +67,7 @@ if __name__ == "__main__":
                     range_theta=[0,3.14159265],
                     range_phi=[0,1.5707963268])
             
-        for k in range(3):
+        for k in range(ncams):
             fun.create_camera(R=15, 
                     range_theta=[0,1.5707963268],
                     range_phi=[0,1.5707963268],

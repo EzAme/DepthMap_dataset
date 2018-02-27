@@ -1,6 +1,7 @@
 import bpy
 import os
 import random as rand
+import texture_test as tex
 from math import sin, cos, pi, asin, acos, atan2
 
 def create_random_cube(
@@ -39,16 +40,21 @@ def create_random_cube(
     
 
     # create and add a texture and color
-    bpy.ops.material.new()
-    if not len(objID):
-        mat = bpy.data.materials['Material']
-        mat.diffuse_color = ( rand.random(), rand.random(), rand.random())
-        bpy.data.objects['Cube'].data.materials.append(mat)
-    else:
-        mat = bpy.data.materials['Material.'+objID]
-        mat.diffuse_color = ( rand.random(), rand.random(), rand.random())
-        bpy.data.objects['Cube.'+objID].data.materials.append(mat)
-    
+    # bpy.ops.material.new()
+    # mat = tex.createMaterials()
+    # bpy.data.objects['Cube'].data.materials.append(mat)
+    # if not len(objID):
+    #     # mat = bpy.data.materials['Material']
+    #     # mat.diffuse_color = ( rand.random(), rand.random(), rand.random())
+    #     mat = tex.createMaterials()
+    #     bpy.data.objects['Cube'].data.materials.append(mat)
+    #     print(objID, 'hello')
+    # else:
+    #     # mat = bpy.data.materials['Material.'+objID]
+    #     # mat.diffuse_color = ( rand.random(), rand.random(), rand.random())
+    #     mat = tex.createMaterials()
+    #     bpy.data.objects['Cube.'+objID].data.materials.append(mat)
+    #     print(objID)
 
 def create_random_sphere(
         objID='', 
@@ -88,12 +94,14 @@ def create_random_sphere(
     # create and add a texture and color
     bpy.ops.material.new()
     if not len(objID):
-        mat = bpy.data.materials['Material']
-        mat.diffuse_color = ( rand.random(), rand.random(), rand.random())
+        # mat = bpy.data.materials['Material']
+        # mat.diffuse_color = ( rand.random(), rand.random(), rand.random())
+        mat = tex.createMaterials()
         bpy.data.objects['Icosphere'].data.materials.append(mat)
     else:
-        mat = bpy.data.materials['Material.'+objID]
-        mat.diffuse_color = ( rand.random(), rand.random(), rand.random())
+        # mat = bpy.data.materials['Material.'+objID]
+        # mat.diffuse_color = ( rand.random(), rand.random(), rand.random())
+        mat = tex.createMaterials()
         bpy.data.objects['Icosphere.'+objID].data.materials.append(mat)
 
 def create_sphere_background():
@@ -311,11 +319,14 @@ def render_scene( id="", ofilename='image'+str(id)+".png"):
 def randomize_texture():
     for obj in bpy.data.objects:
         if obj.type == 'MESH':
-            mat = bpy.data.materials.new(name='Material')
-            mat.diffuse_color = (rand.random(), rand.random(), rand.random())
-            tex = bpy.data.textures.new("SomeName", 'IMAGE')
-            slot = mat.texture_slots.add()
-            slot.texture = tex
+            mat = tex.createMaterials()
+            # mat = bpy.data.materials.new(name='Material')
+            # mat.diffuse_color = (rand.random(), rand.random(), rand.random())
+            # tex = bpy.data.textures.new("SomeName", 'IMAGE')
+            # slot = mat.texture_slots.add()
+            # slot.texture = tex
+            # obj.data.materials.append(mat)
+            # bpy.ops.object.material_slot_remove()
             obj.data.materials.append(mat)
             
 def import_rowdy(filename="RowdyWalker#6",
@@ -324,12 +335,12 @@ def import_rowdy(filename="RowdyWalker#6",
         range_phi=[0,pi],
         size=[0.03,0.01]):
     # import rowdy in to the blender scene
-    print(filename)
+    # print(filename)
     bpy.ops.import_mesh.stl(filepath=filename)
     filename = os.path.splitext(filename)[0]
     # print(filename)
     # capitalize the filename for some fkin reason
-    obj = bpy.data.objects[filename.capitalize()]
+    obj = bpy.data.objects[filename]#.capitalize()]
 
     # scale the rowdy to an appropriate size
     obj.scale *= size[0] + (size[1]-size[0])*rand.random()
