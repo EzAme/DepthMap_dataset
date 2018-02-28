@@ -12,7 +12,7 @@ from math import pi
 #     if not material.users:
 #         bpy.data.materials.remove(material)
 def add_random_shape(R=[2,6], size=[1.5,1], range_theta=[0,pi/2], range_phi=[0,pi/2]):
-    i = 1#randint(1,2)
+    i = randint(1,2)
     if i is 1:
         fun.create_random_cube(R=R,size=size);
     elif i is 2:
@@ -44,7 +44,7 @@ if __name__ == "__main__":
         makeascene()
         
         j = randint(0,5)
-        p = randint(1,5)
+        p = 2
         # add objects randomly
         if i<N/2:
             # add j random shapes

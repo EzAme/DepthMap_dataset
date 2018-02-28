@@ -283,7 +283,7 @@ def create_lamp(
     scene = bpy.context.scene
 
     # Create new lamp datablock
-    lamp_data = bpy.data.lamps.new(name="New Lamp", type='POINT')
+    lamp_data = bpy.data.lamps.new(name="New Lamp", type='AREA')
 
     # Create new object with our lamp datablock
     lamp_object = bpy.data.objects.new(name="New Lamp", object_data=lamp_data)
@@ -299,7 +299,12 @@ def create_lamp(
     z = R*cos(phi)
     lamp_object.location = (x,y,z)
     lamp_object.data.energy = intensity
-
+    lamp_object.data.distance = 5
+    lamp_object.data.gamma = 0.9
+    lamp_object.data.shadow_method = "RAY_SHADOW"
+    lamp_object.data.shape= "RECTANGLE"
+    lamp_object.data.size = 18
+    lamp_object.data.size_y=3
     # And finally select it make active
     lamp_object.select = True
     scene.objects.active = lamp_object
